@@ -133,7 +133,7 @@ const login = () => {
             sub.innerHTML = "......loading";
             setTimeout(() => {
                 sub.innerHTML = "Login";
-                window.location.href = "dashboard.html";
+                window.location.href = "dashboard.html"; // Redirect to dashboard
             }, 1000);
         } else {
             toast("Invalid email or password.");
