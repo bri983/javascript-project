@@ -114,32 +114,54 @@ function displayNotes() {
             </div>`;
     });
 }
-const editTitle = document.getElementById("newTitle")
-const editText = document.getElementById("newText")
-const editNoteParent = document.querySelector(".editNote")
-const panel = document.querySelectorAll(".blur")
-const saveChange = document.getElementById("saveChange")
+const editTitle = document.getElementById("newTitle");
+const editText = document.getElementById("newText");
+const editImage = document.getElementById("newImage");
+const editPreview = document.getElementById("editPreview");
+const editNoteParent = document.querySelector(".editNote");
+const panel = document.querySelectorAll(".blur");
+const saveChange = document.getElementById("saveChange");
 let i;
-const editNote = (index) => {
-    i = index
-    editNoteParent.style.display = "flex"
-    panel.forEach((e) => {
-        e.style.filter = "blur(10px)"
-    })
-    editTitle.value = allNote[index].note
-    editText.value = allNote[index].notes
-    
-}
 
-saveChange.addEventListener("click",()=>{
-    allNote[i].note = editTitle.value
-    allNote[i].notes = editText.value
-    editNoteParent.style.display = "none"
+const editNote = (index) => {
+    i = index;
+    editNoteParent.style.display = "flex";
     panel.forEach((e) => {
-        e.style.filter = "blur(0px)"
-    })
-    displayNotes()
-})
+        e.style.filter = "blur(10px)";
+    });
+    editTitle.value = allNote[index].note;
+    editText.value = allNote[index].notes;
+    if (allNote[index].image) {
+        editPreview.src = allNote[index].image;
+        editPreview.style.display = "block";
+    } else {
+        editPreview.style.display = "none";
+    }
+    editImage.value = ""; 
+};
+
+saveChange.addEventListener("click", () => {
+    allNote[i].note = editTitle.value;
+    allNote[i].notes = editText.value;
+    if (editImage.files && editImage.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            allNote[i].image = e.target.result;
+            finishEdit();
+        };
+        reader.readAsDataURL(editImage.files[0]);
+    } else {
+        finishEdit();
+    }
+});
+
+function finishEdit() {
+    editNoteParent.style.display = "none";
+    panel.forEach((e) => {
+        e.style.filter = "blur(0px)";
+    });
+    displayNotes();
+}
 
 // Hide & Show
 
@@ -170,7 +192,6 @@ document.addEventListener("click", (e) => {
 const iconClick = () => {
     const spans = document.querySelectorAll(".span");
     spans.forEach(span => {
-        // Toggle display between "inline" and "none"
         if (span.style.display === "inline") {
             span.style.display = "none";
             span.style.color = "none";
@@ -184,9 +205,6 @@ const showSpan = () => {
     const icon = document.querySelectorAll(".span")
     icon.forEach((span) => {
         span.style.display = "inline";
-        // span.style.color = "yellow";        span.style.fontWeight = "bold";
-        // span.style.transition = "1s ease"
-
     })
 }
 const hideSpan = () => {
@@ -206,3 +224,41 @@ const removeText = () => {
     hoverText.style.display = "none"
 
 }
+
+const userInfoDiv = document.getElementById("user-info");
+const logoutContainer = document.getElementById("logout-container");
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+if (currentUser) {
+    userInfoDiv.innerHTML = `
+        <span>Welcome, <b>${currentUser.firstName} ${currentUser.lastName}</b></span>
+    `;
+    logoutContainer.innerHTML = `
+        <button id="logout-btn" style="
+            position: fixed;
+            bottom: 160px;
+            right: 30px;
+            padding: 10px 28px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: background 0.2s;
+            z-index: 200;
+        ">Logout</button>
+    `;
+} else {
+    window.location.href = "signin.html";
+}
+
+document.addEventListener("click", function(e) {
+    if (e.target && e.target.id === "logout-btn") {
+        localStorage.removeItem("currentUser");
+        window.location.href = "signin.html";
+    }
+});
+

@@ -129,6 +129,9 @@ const login = () => {
         const allUsers = JSON.parse(localStorage.getItem("user")) || [];
         const userExists = allUsers.some((user) => user.email === mail && user.password === password);
         if (userExists) {
+            const currentUser = allUsers.find((user) => user.email === mail && user.password === password);
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
             toast("Login successful.");
             sub.innerHTML = "......loading";
             setTimeout(() => {
