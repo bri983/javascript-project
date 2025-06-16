@@ -231,7 +231,7 @@ const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
 if (currentUser) {
     userInfoDiv.innerHTML = `
-                <span>Welcome, <b>${currentUser.firstName} + ${currentUser.lastName}</b></span>
+                <span>Welcome, <b>${currentUser.firstName}${currentUser.lastName}</b></span>
     `;
     logoutContainer.innerHTML = `
         <button id="logout-btn" style="
