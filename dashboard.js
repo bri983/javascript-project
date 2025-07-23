@@ -1,4 +1,11 @@
-const toast = (message, bgColor = "red", color = "white", fontWeight = "bold", marginTop = "50px", borderRadius = "50px") => {
+const toast = (
+    message,
+    bgColor = "red",
+    color = "white",
+    fontWeight = "bold",
+    marginTop = "50px",
+    borderRadius = "50px"
+) => {
     Toastify({
         text: message,
         duration: 3000,
@@ -18,17 +25,23 @@ const toast = (message, bgColor = "red", color = "white", fontWeight = "bold", m
     }).showToast();
 };
 
-
-let obj = {}
+let obj = {};
 const addNote = () => {
     const note = title.value.trim();
     const notes = noteInput.value.trim();
-    const input = document.getElementById("image")
-    const file = input.files[0]
+    const input = document.getElementById("image");
+    const file = input.files[0];
     console.log(file);
     if (note === "" || notes === "") {
         // alert("fill all input")
-        toast('Please fill all the fields', 'blue', 'white', 'bold', '50px', '50px')
+        toast(
+            "Please fill all the fields",
+            "blue",
+            "white",
+            "bold",
+            "50px",
+            "50px"
+        );
         return;
     }
     // else if (!/^[A-Z]/.test(note)) {
@@ -38,75 +51,70 @@ const addNote = () => {
     else if (note === "") {
         alert("Please Add  Title");
         return;
-    }
-    else if (notes === "") {
+    } else if (notes === "") {
         alert("Please add a Note");
         return;
-
-    }
-    else if(file === ""){
-        alert("add your image")
-    }
-    else if (file == undefined) {
-        imageShow = ""
+    } else if (file === "") {
+        alert("add your image");
+    } else if (file == undefined) {
+        imageShow = "";
         obj = {
             note,
             notes,
-            imageShow
-        }
-        allNote.push(obj)
-        localStorage.setItem("user", JSON.stringify(allNote))
+            imageShow,
+        };
+        allNote.push(obj);
+        localStorage.setItem("user", JSON.stringify(allNote));
         console.log(allNote);
         displayNotes();
         title.value = "";
         noteInput.value = "";
-    }
-    else {
-
-        const reader = new FileReader;
+    } else {
+        const reader = new FileReader();
         reader.addEventListener("load", (e) => {
-            imageShow = e.target.result
+            imageShow = e.target.result;
             obj = {
                 note,
                 notes,
-                imageShow
-            }
-            allNote.push(obj)
-            localStorage.setItem("user", JSON.stringify(allNote))
+                imageShow,
+            };
+            allNote.push(obj);
+            localStorage.setItem("user", JSON.stringify(allNote));
             console.log(allNote);
             displayNotes();
             title.value = "";
             noteInput.value = "";
-        })
-        reader.readAsDataURL(file)
-
+        });
+        reader.readAsDataURL(file);
     }
-}
+};
 
 const deleteNote = (book) => {
     const confirmDelete = confirm("Are you sure you want to delete this note?");
     if (confirmDelete) {
         allNote.splice(book, 1);
-        localStorage.setItem("user", JSON.stringify(allNote))
+        localStorage.setItem("user", JSON.stringify(allNote));
         console.log(allNote);
 
         displayNotes();
     }
-}
+};
 
-const allNote = JSON.parse(localStorage.getItem('notes')) || [];
-show.innerHTML = (allNote)
-console.log(allNote);
-displayNotes()
+let allNote = JSON.parse(localStorage.getItem("notes")) || [];
+// ...existing code...
+displayNotes();
 
 function displayNotes() {
     show.innerHTML = "";
-    allNote.map((output, index) => {
+    allNote.forEach((output, index) => {
         show.innerHTML += `
             <div class="mb-3 pt-3 ps-3 pb-5 border border-light rounded-3 text-white card" style="background-color: rgb(32,33,36); position: relative;">
                 <h3>${output.note}</h3>
                 <p class="pt-2 pe-3">${output.notes}</p>
-                ${output.imageShow ? `<img class="imageStyle" id="image${index}" src="${output.imageShow}" />` : ""}
+                ${output.imageShow
+                ? `<img class="imageStyle" id="image${index}" src="${output.imageShow}" />`
+                : ""
+            }
                 <div class="d-flex justify-content-center gap-2" style="position: absolute; bottom:10px;">
                     <button class="btn btn-danger" onclick="deleteNote(${index})" style="width:100px;">Delete</button>
                     <button class="btn btn-warning" onclick="editNote(${index})" style="width:100px;">Edit</button>
@@ -131,13 +139,13 @@ const editNote = (index) => {
     });
     editTitle.value = allNote[index].note;
     editText.value = allNote[index].notes;
-    if (allNote[index].image) {
-        editPreview.src = allNote[index].image;
+    if (allNote[index].imageShow) {
+        editPreview.src = allNote[index].imageShow;
         editPreview.style.display = "block";
     } else {
         editPreview.style.display = "none";
     }
-    editImage.value = ""; 
+    editImage.value = "";
 };
 
 saveChange.addEventListener("click", () => {
@@ -146,11 +154,13 @@ saveChange.addEventListener("click", () => {
     if (editImage.files && editImage.files[0]) {
         const reader = new FileReader();
         reader.onload = function (e) {
-            allNote[i].image = e.target.result;
+            allNote[i].imageShow = e.target.result;
+            localStorage.setItem("notes", JSON.stringify(allNote));
             finishEdit();
         };
         reader.readAsDataURL(editImage.files[0]);
     } else {
+        localStorage.setItem("notes", JSON.stringify(allNote));
         finishEdit();
     }
 });
@@ -165,33 +175,35 @@ function finishEdit() {
 
 // Hide & Show
 
-const title = document.getElementById("title")
-const noteInput = document.getElementById("noteInput")
-const stay = document.getElementById("stay")
-const btn = document.getElementById("btn")
+const title = document.getElementById("title");
+const noteInput = document.getElementById("noteInput");
+const stay = document.getElementById("stay");
+const btn = document.getElementById("btn");
 
 document.addEventListener("click", (e) => {
-    if (e.target == title || e.target == noteInput || e.target == stay || e.target == btn) {
-        const allShow = document.querySelectorAll(".show")
+    if (
+        e.target == title ||
+        e.target == noteInput ||
+        e.target == stay ||
+        e.target == btn
+    ) {
+        const allShow = document.querySelectorAll(".show");
         allShow.forEach((show) => {
-            show.style.display = "block"
-        })
-        document.querySelector(".note").style.height = "250px"
-    }
-    else {
-        const allShow = document.querySelectorAll(".show")
+            show.style.display = "block";
+        });
+        document.querySelector(".note").style.height = "250px";
+    } else {
+        const allShow = document.querySelectorAll(".show");
         allShow.forEach((show) => {
-            show.style.display = "none"
-        })
-        document.querySelector(".note").style.height = "150px"
+            show.style.display = "none";
+        });
+        document.querySelector(".note").style.height = "150px";
     }
-})
-
-
+});
 
 const iconClick = () => {
     const spans = document.querySelectorAll(".span");
-    spans.forEach(span => {
+    spans.forEach((span) => {
         if (span.style.display === "inline") {
             span.style.display = "none";
             span.style.color = "none";
@@ -199,31 +211,28 @@ const iconClick = () => {
             span.style.display = "inline";
         }
     });
-}
+};
 
 const showSpan = () => {
-    const icon = document.querySelectorAll(".span")
+    const icon = document.querySelectorAll(".span");
     icon.forEach((span) => {
         span.style.display = "inline";
-    })
-}
+    });
+};
 const hideSpan = () => {
-    const icon = document.querySelectorAll(".span")
+    const icon = document.querySelectorAll(".span");
     icon.forEach((span) => {
         span.style.display = "none";
-    })
-}
-
-
+    });
+};
 
 const showText = () => {
-    hoverText.style.display = "block"
-}
+    hoverText.style.display = "block";
+};
 
 const removeText = () => {
-    hoverText.style.display = "none"
-
-}
+    hoverText.style.display = "none";
+};
 
 const userInfoDiv = document.getElementById("user-info");
 const logoutContainer = document.getElementById("logout-container");
@@ -255,10 +264,9 @@ if (currentUser) {
     window.location.href = "signin.html";
 }
 
-document.addEventListener("click", function(e) {
+document.addEventListener("click", function (e) {
     if (e.target && e.target.id === "logout-btn") {
         localStorage.removeItem("currentUser");
         window.location.href = "signin.html";
     }
 });
-
